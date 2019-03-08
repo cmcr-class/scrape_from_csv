@@ -2,14 +2,16 @@ library(tidyverse)
 library(rvest)
 
 links_data <- read_csv("data/vaccine_weChat.csv") %>% 
-    mutate(file = 1:nrow(.)) %>% 
-    head(n = 10)
+    mutate(file = 1:nrow(.))
 
-link_number = 0
-
-walk2(links_data$url, links_data$file, function(x, y) {
-    read_html(x) %>% 
-        html_text() %>% 
-    writeLines(con = file.path("raw_files", paste0("file", y, ".txt")))
+links_with_articles <- map_dfr(links_data$url, function(x) {
+    links_data %>%
+        filter(url == x) %>% 
+        mutate(article_text = read_html(x) %>% 
+                   html_nodes(".rich_media_content") %>% 
+                   html_text() %>% 
+                   str_replace_all("[\r\n]", ""))
 })
+
+save(links_with_articles, "links_with_articles.rda")
 
