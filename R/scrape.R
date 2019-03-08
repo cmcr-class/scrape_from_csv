@@ -15,3 +15,4 @@ links_with_articles <- map_dfr(links_data$url, function(x) {
 
 save(links_with_articles, "links_with_articles.rda")
 
+# see http://people.fas.harvard.edu/~izahn/posts/reading-data-with-non-native-encoding-in-r/
